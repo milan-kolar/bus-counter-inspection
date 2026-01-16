@@ -23,3 +23,11 @@ export const downloadCSV = (content: string, filename: string) => {
     document.body.removeChild(link);
   }
 };
+
+export const triggerHaptic = () => {
+  // Kontrola podpory prohlížečem
+  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    // 15ms je velmi krátká, "crisp" vibrace (jako klepnutí)
+    navigator.vibrate(15);
+  }
+};
