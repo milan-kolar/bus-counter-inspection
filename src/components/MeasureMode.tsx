@@ -2,13 +2,13 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { BUTTON_TYPES, MeasureRecord } from '@/constants';
+import { BUTTON_CONFIGS, MeasureRecord } from '@/constants';
 import { downloadCSV, formatDateForFilename, triggerHaptic } from '@/utils';
 
 interface Props {
   stopName: string;
   circulation: string;
-  isOneHanded: boolean; // Nový prop
+  isOneHanded: boolean;
 }
 
 export default function MeasureMode({ stopName, circulation, isOneHanded }: Props) {
@@ -37,7 +37,7 @@ export default function MeasureMode({ stopName, circulation, isOneHanded }: Prop
   }, [isRunning]);
 
   const handleStart = () => {
-    triggerHaptic(); // Vibrace
+    triggerHaptic();
     setRecords([]);
     setIsRunning(true);
     startTimeRef.current = Date.now();
@@ -45,7 +45,7 @@ export default function MeasureMode({ stopName, circulation, isOneHanded }: Prop
   };
 
   const handleStop = () => {
-    triggerHaptic(); // Vibrace
+    triggerHaptic();
     setIsRunning(false);
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     
@@ -60,7 +60,7 @@ export default function MeasureMode({ stopName, circulation, isOneHanded }: Prop
   const handleButtonClick = (type: string) => {
     if (!isRunning || !startTimeRef.current) return;
 
-    triggerHaptic(); // Vibrace při kliknutí
+    triggerHaptic();
 
     const now = Date.now();
     const durationMs = now - startTimeRef.current;
@@ -106,21 +106,25 @@ export default function MeasureMode({ stopName, circulation, isOneHanded }: Prop
         {/* Kontejner gridu s logikou pro jednu ruku */}
         <div className={`flex-grow overflow-y-auto pb-4 transition-all duration-300 ${isOneHanded ? 'flex justify-end' : ''}`}>
             <div className={`grid grid-cols-3 gap-2 transition-all duration-300 ${isOneHanded ? 'w-[85%]' : 'w-full'}`}>
-                {BUTTON_TYPES.map((type) => (
+                {BUTTON_CONFIGS.map((btn) => (
                     <button
-                        key={type}
-                        onClick={() => handleButtonClick(type)}
+                        key={btn.label}
+                        onClick={() => handleButtonClick(btn.label)}
                         disabled={!isRunning}
+                        style={isRunning ? {
+                            backgroundColor: btn.bgColor,
+                            borderColor: btn.borderColor
+                        } : {}}
                         className={`
                             p-1 rounded-lg font-bold text-sm sm:text-base border-b-4 active:border-b-0 active:translate-y-1 transition-all
                             flex items-center justify-center text-center break-words leading-tight h-20
                             ${!isRunning 
                                 ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
-                                : 'bg-blue-50 text-blue-900 border-blue-200 hover:bg-blue-100 active:bg-blue-200 shadow-sm'
+                                : 'text-gray-900 hover:brightness-95 active:brightness-90 shadow-sm'
                             }
                         `}
                     >
-                        {type}
+                        {btn.label}
                     </button>
                 ))}
             </div>

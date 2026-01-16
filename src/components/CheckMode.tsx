@@ -2,13 +2,13 @@
 'use client';
 
 import { useState } from 'react';
-import { BUTTON_TYPES } from '@/constants';
+import { BUTTON_TYPES, BUTTON_CONFIGS } from '@/constants';
 import { downloadCSV, formatDateForFilename, triggerHaptic } from '@/utils';
 import Image from 'next/image';
 
 interface Props {
   circulation: string;
-  isOneHanded: boolean; // Nový prop
+  isOneHanded: boolean;
 }
 
 export default function CheckMode({ circulation, isOneHanded }: Props) {
@@ -52,7 +52,7 @@ export default function CheckMode({ circulation, isOneHanded }: Props) {
 
   const handleUndo = () => {
     if (!isRunning || history.length === 0) return;
-    triggerHaptic(); // i u Zpět chceme vibraci
+    triggerHaptic();
     const lastType = history[history.length - 1];
     const newHistory = history.slice(0, -1);
     
@@ -97,23 +97,27 @@ export default function CheckMode({ circulation, isOneHanded }: Props) {
         {/* Kontejner s logikou pro jednu ruku */}
         <div className={`flex-grow overflow-y-auto pb-20 transition-all duration-300 ${isOneHanded ? 'flex justify-end' : ''}`}>
              <div className={`grid grid-cols-3 gap-2 transition-all duration-300 ${isOneHanded ? 'w-[85%]' : 'w-full'}`}>
-                {BUTTON_TYPES.map((type) => (
+                {BUTTON_CONFIGS.map((btn) => (
                     <button
-                        key={type}
-                        onClick={() => handleIncrement(type)}
+                        key={btn.label}
+                        onClick={() => handleIncrement(btn.label)}
                         disabled={!isRunning}
+                        style={isRunning ? {
+                            backgroundColor: btn.bgColor,
+                            borderColor: btn.borderColor
+                        } : {}}
                         className={`
                             p-1 rounded-lg relative border-b-4 active:border-b-0 active:translate-y-1 transition-all h-20
                             flex flex-col items-center justify-center
                             ${!isRunning 
                                 ? 'bg-gray-100 text-gray-400 border-gray-200' 
-                                : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100 active:bg-amber-200'
+                                : 'text-gray-900 hover:brightness-95 active:brightness-90'
                             }
                         `}
                     >
-                        <span className="font-bold text-xs sm:text-sm text-center leading-tight mb-1">{type}</span>
+                        <span className="font-bold text-xs sm:text-sm text-center leading-tight mb-1">{btn.label}</span>
                         <span className="bg-white/80 px-3 py-0.5 rounded-full text-lg font-mono font-bold text-black shadow-sm">
-                            {counts[type]}
+                            {counts[btn.label]}
                         </span>
                     </button>
                 ))}

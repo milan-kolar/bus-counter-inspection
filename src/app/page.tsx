@@ -41,7 +41,7 @@ export default function Home() {
   if (!isLoaded) return <div className="p-4 flex h-screen items-center justify-center">Načítám...</div>;
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden">
+    <main className="min-h-screen bg-gray-50 text-gray-900 flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden font-sans">
       
       {/* Horní lišta */}
       <header className="bg-blue-800 text-white p-3 flex items-center justify-between shadow-md z-10 relative">
