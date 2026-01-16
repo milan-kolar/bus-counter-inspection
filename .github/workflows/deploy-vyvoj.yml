@@ -1,0 +1,36 @@
+name: Deploy Static Vyvoj Web
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  deploy-static:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Static Site
+        run: npm run build
+
+      - name: Deploy to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }} 
+          username: ${{ secrets.VPS_USER }} 
+          port: ${{ secrets.VPS_PORT }} 
+          key: ${{ secrets.VYVOJ_SSH_KEY }} 
+          source: "out/*" 
+          target: "/var/www/vyvoj.ondrovywebovky.cz"
+          strip_components: 1 
+          rm: true 
