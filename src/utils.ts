@@ -28,6 +28,9 @@ export const triggerHaptic = () => {
   // Kontrola podpory prohlížečem
   if (typeof navigator !== 'undefined' && navigator.vibrate) {
     // 15ms je velmi krátká, "crisp" vibrace (jako klepnutí)
+    console.log("Vibrace triggered");
     navigator.vibrate(15);
+  }else {
+  console.log("Vibrace not supported?" );
   }
 };
