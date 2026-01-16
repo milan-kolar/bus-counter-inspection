@@ -23,14 +23,26 @@ jobs:
       - name: Build Static Site
         run: npm run build
 
+      - name: Clean remote folder
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VYVOJ_SSH_KEY }}
+          # Smažeme vše UVNITŘ složky, ale složku necháme
+          # || true zajistí, že akce nespadne, pokud je složka prázdná
+          script: rm -rf /var/www/vyvoj.ondrovywebovky.cz/* || true
+
+      # KROK 2: Nahrání nových souborů
       - name: Deploy to VPS
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.VPS_HOST }} 
-          username: ${{ secrets.VPS_USER }} 
-          port: ${{ secrets.VPS_PORT }} 
-          key: ${{ secrets.VYVOJ_SSH_KEY }} 
-          source: "out/*" 
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VYVOJ_SSH_KEY }}
+          source: "out/*"
           target: "/var/www/vyvoj.ondrovywebovky.cz"
-          strip_components: 1 
-          rm: true 
+          strip_components: 1
+          rm: false
